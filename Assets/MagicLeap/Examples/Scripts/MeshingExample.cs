@@ -47,7 +47,7 @@ namespace MagicLeap
         [SerializeField, Space, Tooltip("MLControllerConnectionHandlerBehavior reference.")]
         private MLControllerConnectionHandlerBehavior _controllerConnectionHandler = null;
 
-        private MeshingVisualizer.RenderMode _renderMode = MeshingVisualizer.RenderMode.Wireframe;
+        [SerializeField]private MeshingVisualizer.RenderMode _renderMode = MeshingVisualizer.RenderMode.Wireframe;
         private int _renderModeCount;
 
         private static readonly Vector3 _boundedExtentsSize = new Vector3(2.0f, 2.0f, 2.0f);

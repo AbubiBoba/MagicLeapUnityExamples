@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 
-public class Gun : MonoBehaviour
+public class Pistol : MonoBehaviour, IShooting
 {
     [SerializeField] private int _damage;
-    [SerializeField] private Vector3 _force;
+    //[SerializeField] private Vector3 _force;
+    [SerializeField] private int _force;
 
     [SerializeField] GameObject _particlesPrefab;
     [SerializeField] Transform _muzzle;
@@ -16,9 +17,9 @@ public class Gun : MonoBehaviour
 
     private void Start()
     {
-        MLInput.OnTriggerDown += OnPistolTriggerPressed;
+        MLInput.OnTriggerDown += OnGunTriggerPressed;
     }
-    private void OnPistolTriggerPressed(byte controllerId, float value)
+    public void OnGunTriggerPressed(byte controllerId, float value)
     {
         //ShootParticles();
         ShootSleeve();
@@ -26,18 +27,18 @@ public class Gun : MonoBehaviour
     }
     private void OnDestroy()
     {
-        MLInput.OnTriggerDown -= OnPistolTriggerPressed;
+        MLInput.OnTriggerDown -= OnGunTriggerPressed;
     }
-    private void ShootParticles()
+    public void ShootParticles()
     {
         GameObject particles = Instantiate(_particlesPrefab, _muzzle);
     }
-    private void ShootSleeve()
+    public void ShootSleeve()
     {
         GameObject sleeve = Instantiate(_sleevePrefab, _shutter.position, Quaternion.identity);
-        sleeve.GetComponent<Rigidbody>().AddForce(_force);
+        sleeve.GetComponent<Rigidbody>().AddForce(_shutter.right + _shutter.up * _force, ForceMode.Force);
     }
-    private void GiveDamage()
+    public void GiveDamage()
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit))
