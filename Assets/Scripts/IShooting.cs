@@ -4,4 +4,5 @@ public interface IShooting
     public void ShootParticles();
     public void ShootSleeve();
     public void GiveDamage();
+    //private void TryToShoot();
 }

@@ -1,29 +1,35 @@
-using UnityEngine;
 using UnityEngine.XR.MagicLeap;
+using UnityEngine;
 
-public class Pistol : MonoBehaviour, IShooting
+public class LiquidGun : MonoBehaviour, IShooting
 {
     [SerializeField] private int _damage;
-    //[SerializeField] private Vector3 _force;
-    [SerializeField] private int _force;
+    [SerializeField] private int _maxAmmoAmount;
+    private int _ammoAmount;
 
     [SerializeField] GameObject _particlesPrefab;
     [SerializeField] Transform _muzzle;
-
-    [SerializeField] GameObject _sleevePrefab;
-    [SerializeField] Transform _shutter;
 
     private MLInput.Controller _controller;
 
     private void Start()
     {
+        _ammoAmount = _maxAmmoAmount - 1;
         MLInput.OnTriggerDown += OnGunTriggerPressed;
     }
     public void OnGunTriggerPressed(byte controllerId, float value)
     {
-        //ShootParticles();
-        ShootSleeve();
-        GiveDamage();
+        TryToShoot();
+    }
+    private void TryToShoot()
+    {
+        if (_ammoAmount > 0)
+        {
+            //ShootParticles();
+            GiveDamage();
+            ShootSleeve();
+            _ammoAmount = (_ammoAmount <= 0) ? (0) : (_ammoAmount - 1);
+        }
     }
     private void OnDestroy()
     {
@@ -33,10 +39,10 @@ public class Pistol : MonoBehaviour, IShooting
     {
         GameObject particles = Instantiate(_particlesPrefab, _muzzle);
     }
+    [SerializeField] private LiquidAmmoDisplay _liquidAmmoDisplay;
     public void ShootSleeve()
     {
-        GameObject sleeve = Instantiate(_sleevePrefab, _shutter.position, Quaternion.identity);
-        sleeve.GetComponent<Rigidbody>().AddForce((_shutter.right + _shutter.up) * _force, ForceMode.Force);
+        _liquidAmmoDisplay.UpdateAmount(_ammoAmount, _maxAmmoAmount);
     }
     public void GiveDamage()
     {
